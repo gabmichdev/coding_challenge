@@ -11,6 +11,9 @@ export const getCountryCode = (phoneNumber: string): string | null => {
 };
 
 export const getPhoneNumber = (phoneNumber: string): string | null => {
+	if (!phoneNumber) {
+		return null
+	}
 	phoneNumber = phoneNumber.replace(/[- ]/g, '');
 	// Mobile phones contain at least 10 characters
 	if (phoneNumber.length < 10) {
