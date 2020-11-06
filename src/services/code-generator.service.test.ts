@@ -11,7 +11,7 @@ let mockQuery: ICodeInfoQuery;
 describe('Code Generator Service', () => {
 	beforeEach(() => {
 		codeGeneratorService = new CodeGeneratorService();
-		mockQuery = { code: '1234', email: 'rever@gmail.com', phoneNumber: '123' };
+		mockQuery = { code: '1234', phoneNumber: '123' };
 	});
 	it('Should instantiate a code generator service', () => {
 		expect(codeGeneratorService).to.be.instanceOf(CodeGeneratorService);
@@ -35,19 +35,17 @@ describe('Code Generator Service', () => {
 		expect(() => codeGeneratorService.getCode(0)).to.throw('An error ocurred when generating code');
 	});
 	it('Should return undefined if query does not match any code info', () => {
-		const result = codeGeneratorService.getCodeInfo(mockQuery.code, mockQuery.email, mockQuery.phoneNumber);
+		const result = codeGeneratorService.getCodeInfo(mockQuery.code, mockQuery.phoneNumber);
 		expect(result).to.be.undefined;
 	});
 	it('Should save code info', () => {
 		let mockCodeInfo: ICodeInfo = {
-			email: mockQuery.email as string,
 			phoneNumber: mockQuery.phoneNumber as string,
 			code: mockQuery.code as string,
 			verified: false
 		};
 		const result = codeGeneratorService.saveCodeInfo(mockCodeInfo);
 		expect(result.code).to.be.equal(mockCodeInfo.code);
-		expect(result.email).to.be.equal(mockCodeInfo.email);
 		expect(result.phoneNumber).to.be.equal(mockCodeInfo.phoneNumber);
         expect(result.verified).to.be.equal(mockCodeInfo.verified);
         expect(codeGeneratorService.codesGenerated[0]).to.exist.and.to.deep.equal(result)
@@ -55,7 +53,6 @@ describe('Code Generator Service', () => {
 
 	it('Should return a code info if query matches one of the existing code infos with the provided data', () => {
 		let mockCodeInfo: ICodeInfo = {
-			email: mockQuery.email as string,
 			phoneNumber: mockQuery.phoneNumber as string,
 			code: mockQuery.code as string,
 			verified: false

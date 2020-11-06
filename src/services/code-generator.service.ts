@@ -5,14 +5,12 @@ import Container from 'typedi';
 
 export interface ICodeInfo {
 	code: string;
-	email: string;
 	phoneNumber: string;
 	verified: boolean;
 }
 
 export interface ICodeInfoQuery {
 	code?: string;
-	email?: string;
 	phoneNumber?: string;
 }
 
@@ -31,7 +29,7 @@ export class CodeGeneratorService {
 			throw new GenericError(400, 'Your email is not a Rever address');
 		}
 		const code = this.getCode(requiredCodeLength);
-		const codeInfo: ICodeInfo = { code, email, phoneNumber, verified: false };
+		const codeInfo: ICodeInfo = { code, phoneNumber, verified: false };
 		const codeInfoSaved = this.saveCodeInfo(codeInfo);
 		return codeInfoSaved.code;
 	}
@@ -48,7 +46,7 @@ export class CodeGeneratorService {
 	}
 
 	saveCodeInfo(codeInfo: ICodeInfo) {
-		const codeInfoFound = this.getCodeInfo(undefined, codeInfo.email, codeInfo.phoneNumber);
+		const codeInfoFound = this.getCodeInfo(undefined, codeInfo.phoneNumber);
 		if (!codeInfoFound) {
 			this.codesGenerated.push(codeInfo);
 			return codeInfo;
@@ -62,17 +60,11 @@ export class CodeGeneratorService {
 		if (code) {
 			query.code = code;
 		}
-		if (email) {
-			query.email = email;
-		}
 		if (phoneNumber) {
 			query.phoneNumber = phoneNumber;
 		}
 		return this.codesGenerated.find((codeInfo: ICodeInfo) => {
 			let found = true;
-			if (query.email) {
-				found = found && (query.email === codeInfo.email ? true : false);
-			}
 			if (query.code) {
 				found = found && (query.code === codeInfo.code ? true : false);
 			}
@@ -80,8 +72,6 @@ export class CodeGeneratorService {
 				found = found && (query.phoneNumber === codeInfo.phoneNumber ? true : false);
 			}
 			console.table({
-				emailQuery: query.email,
-				infoEmail: codeInfo.email,
 				codeQuery: query.code,
 				infoCode: codeInfo.code,
 				phoneNumberQuery: query.phoneNumber,

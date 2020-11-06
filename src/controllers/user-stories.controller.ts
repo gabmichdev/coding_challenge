@@ -32,8 +32,8 @@ export class UserStoriesController {
 	}
 
 	@OnUndefined(500)
-	@Post('/resend')
-	async resendVerificationCode(@Body() resendCodeDto: ResendCodeDto): Promise<object> {
+	@Post('/resend/:phoneNumber')
+	async resendVerificationCode(@Params() resendCodeDto: ResendCodeDto): Promise<object> {
 		const { phoneNumber } = resendCodeDto;
 		this.twilioService.resendVerificationCode(phoneNumber);
 		return { messageSent: true };
