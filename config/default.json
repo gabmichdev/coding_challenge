@@ -1,0 +1,10 @@
+{
+	"twilio": {
+		"accountSid": "sC9f21843f2827a3ec624f4df552a2d70a",
+		"token": "3200d398e8601b1d8d4dbec809355cbb",
+		"phoneNumber": "+19729458287"
+	},
+	"server": {
+		"port": 3000
+	}
+}

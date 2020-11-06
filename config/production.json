@@ -1,0 +1,10 @@
+{
+    "twilio": {
+        "accountSid": "AC PROD SSID",
+        "token": "PROD SECRET",
+        "phoneNumber": "PROD PHONE NUMBER"
+    }, 
+    "server": {
+        "port": 8080
+    }
+}
