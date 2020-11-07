@@ -8,14 +8,17 @@ export function NotValidEmail(validationOptions?: ValidationOptions) {
 			propertyName,
 			constraints: [],
 			options: validationOptions,
-			
+
 			validator: {
-				validate(value: any, args: ValidationArguments) {
-					let valid = !value.split('@')[1].includes('yahoo.com');
-					valid = valid && (value.includes('rever') || value.includes('score'))
-					return valid
+				validate(email: any, args: ValidationArguments) {
+					return notValidEmail(email);
 				}
 			}
 		});
 	};
 }
+
+export const notValidEmail = (email: string) => {
+	let valid = !email.split('@')[1].includes('yahoo.com');
+	return valid && (email.includes('rever') || email.includes('score'));
+};

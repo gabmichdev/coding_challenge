@@ -1,5 +1,5 @@
 import { registerDecorator, ValidationOptions, ValidationArguments } from 'class-validator';
-import { getPhoneNumber } from '../utils/utilities';
+import { PhoneNumberParserService } from '../services/phone-number-parser.service';
 
 export function ValidPhoneNumber(validationOptions?: ValidationOptions) {
 	return (object: any, propertyName: string) => {
@@ -11,7 +11,7 @@ export function ValidPhoneNumber(validationOptions?: ValidationOptions) {
 			options: validationOptions,
 			validator: {
 				validate(value: any, args: ValidationArguments) {
-					return getPhoneNumber(value) !== null;
+					return new PhoneNumberParserService().getPhoneNumber(value) !== null;
 				}
 			}
 		});

@@ -1,5 +1,4 @@
 import { registerDecorator, ValidationOptions, ValidationArguments } from 'class-validator';
-import { getPhoneNumber } from '../utils/utilities';
 
 export function IsReverScoreCode(validationOptions?: ValidationOptions) {
 	return (object: any, propertyName: string) => {
