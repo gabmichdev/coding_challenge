@@ -4,11 +4,12 @@ import { ValidateVerificationCodeDto } from '../dto/check-code.dto';
 import { ResendCodeDto } from '../dto/resend-code.dto';
 import { VerifyAccountDto } from '../dto/verify-account.dto';
 import { TwilioService } from '../services/twilio.service';
+import config from 'config';
 
 @JsonController('/user-stories/verification')
 export class UserStoriesController {
 	constructor(private twilioService = Container.get(TwilioService)) {
-		this.twilioService = twilioService;
+		this.twilioService.setCredentials(config.get('twilio'));
 	}
 
 	@OnUndefined(500)
