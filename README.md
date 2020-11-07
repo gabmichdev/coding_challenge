@@ -28,7 +28,6 @@ If a code was successfully received, users should proceed to endpoint <strong>2<
 
 As an optional step, in case users forget or did not get a verification code, they should step onto endpoint <strong>3</strong> for the system to re-send the generated code, if there is any.
 
-
 ### Project description
 This project uses Node.js as the base runtime. The server itself is managed using Express.js. Additionally, it is written using Typescript and compiled into Javascript for better typing support.
 As another advantage of using Typescript is the use of Routing-Controllers, which is a class-based router with support for Express.js with very intuitive controller building, allowing for seemless dependency injection support.
@@ -37,3 +36,12 @@ As another advantage of using Typescript is the use of Routing-Controllers, whic
 Main improvement to do is the possibility for the user to verify its account by just entering the verification code into the system. Currently codes are saved in-memory along side the phone number and the email. The reason it is the way that it is right now is because the system has no way to return a personalized error message in case the code entered does not match with the correct one.
 
 Other improvements are clearly the implementation of a better persistance layer, namely a cache-based database such as redis, since the application does not rely on keeping up with huge, complex and long-time persistant data.
+
+### How to test this?
+Provided in this repository there is a JSON file called `postman-collection.json`. It contains the three previously explained endpoints with the field names already set. In any case, the system will inform the user if it finds any issue with the entered data. The user should upload this file into Postman or any other REST client of their choice. Afterwards, the corresponding fields should be filled with valid data.
+
+If you are short in time and would like to check that everything is working as expected, it is as easy as running:
+```cmd
+npm test
+```
+to run all the unit tests.

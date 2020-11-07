@@ -1,0 +1,114 @@
+{
+	"info": {
+		"_postman_id": "8328aab4-fc37-4057-94b7-2dcd1e7b7f58",
+		"name": "Challenge",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Get verification code",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"ENTER AN EMAIL HERE\",\r\n    \"phoneNumber\": \"ENTER A PHONE NUMBER HERE\"\r\n}"
+				},
+				"url": {
+					"raw": "{{dev_host}}/user-stories/verification/send",
+					"host": [
+						"{{dev_host}}"
+					],
+					"path": [
+						"user-stories",
+						"verification",
+						"send"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Check verification code",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"ENTER AN EMAIL HERE\",\r\n    \"phoneNumber\": \"ENTER A PHONE NUMBER HERE\"\r\n}"
+				},
+				"url": {
+					"raw": "{{dev_host}}/user-stories/verification/ENTER THE VERIFICATION CODE HERE/validate",
+					"host": [
+						"{{dev_host}}"
+					],
+					"path": [
+						"user-stories",
+						"verification",
+						"ENTER THE VERIFICATION CODE HERE",
+						"validate"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Resend verification code",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{dev_host}}/user-stories/verification/resend/ENTER YOUR PHONE NUMBER HERE",
+					"host": [
+						"{{dev_host}}"
+					],
+					"path": [
+						"user-stories",
+						"verification",
+						"resend",
+						"ENTER YOUR PHONE NUMBER HERE"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}
