@@ -7,7 +7,6 @@ import { GenericError, IResponseObject } from '../interfaces/responses';
 export class CustomErrorHandler implements ExpressErrorMiddlewareInterface {
 	error(error: GenericError, _: Request, res: Response, _1: NextFunction) {
 		try {
-			console.error(error);
 			let errors: ValidationError[] | null = null;
 			if (error.errors) {
 				errors = error.errors;
@@ -19,7 +18,6 @@ export class CustomErrorHandler implements ExpressErrorMiddlewareInterface {
 			};
 			return res.status(error.httpCode).json(response);
 		} catch (err) {
-			// console.log(err);
 			const response: IResponseObject = {
 				message: 'An unexpected error ocurred',
 				httpCode: 500
