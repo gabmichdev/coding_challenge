@@ -1,30 +1,3 @@
-import { isMobilePhone } from 'class-validator';
-
-export const getCountryCode = (phoneNumber: string): string | null => {
-	const curatedPhoneNumber = getPhoneNumber(phoneNumber);
-	if (!curatedPhoneNumber) {
-		return null;
-	}
-	const indexEnd = curatedPhoneNumber.length - 10;
-	const countryCode = phoneNumber.slice(0, indexEnd);
-	return countryCode.length > 0 ? countryCode : null;
-};
-
-export const getPhoneNumber = (phoneNumber: string): string | null => {
-	if (!phoneNumber) {
-		return null
-	}
-	phoneNumber = phoneNumber.replace(/[- ]/g, '');
-	// Mobile phones contain at least 10 characters
-	if (phoneNumber.length < 10) {
-		return null;
-	}
-	if (!isMobilePhone(phoneNumber)) {
-		return null;
-	}
-	return phoneNumber;
-};
-
 const re = /{(.*?)\}/g; // Matches ant text wrapped in {curly braces}
 export const parseMessage = (message: string, fields: object) => {
 	/**
