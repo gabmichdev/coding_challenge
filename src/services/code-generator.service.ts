@@ -55,7 +55,7 @@ export class CodeGeneratorService {
 		return codeInfoFound;
 	}
 
-	getCodeInfo(code?: string, email?: string, phoneNumber?: string): ICodeInfo | undefined {
+	getCodeInfo(code?: string, phoneNumber?: string): ICodeInfo | undefined {
 		const query: ICodeInfoQuery = {};
 		if (code) {
 			query.code = code;
@@ -71,14 +71,6 @@ export class CodeGeneratorService {
 			if (query.phoneNumber) {
 				found = found && (query.phoneNumber === codeInfo.phoneNumber ? true : false);
 			}
-			console.table({
-				codeQuery: query.code,
-				infoCode: codeInfo.code,
-				phoneNumberQuery: query.phoneNumber,
-				infoPhoneNumber: codeInfo.phoneNumber,
-				found
-			});
-			console.log(`Found: ${found}`);
 			return found;
 		});
 	}

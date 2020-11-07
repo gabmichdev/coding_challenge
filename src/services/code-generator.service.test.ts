@@ -47,8 +47,8 @@ describe('Code Generator Service', () => {
 		const result = codeGeneratorService.saveCodeInfo(mockCodeInfo);
 		expect(result.code).to.be.equal(mockCodeInfo.code);
 		expect(result.phoneNumber).to.be.equal(mockCodeInfo.phoneNumber);
-        expect(result.verified).to.be.equal(mockCodeInfo.verified);
-        expect(codeGeneratorService.codesGenerated[0]).to.exist.and.to.deep.equal(result)
+		expect(result.verified).to.be.equal(mockCodeInfo.verified);
+		expect(codeGeneratorService.codesGenerated[0]).to.exist.and.to.deep.equal(result);
 	});
 
 	it('Should return a code info if query matches one of the existing code infos with the provided data', () => {
@@ -57,9 +57,9 @@ describe('Code Generator Service', () => {
 			code: mockQuery.code as string,
 			verified: false
 		};
-        const result = codeGeneratorService.saveCodeInfo(mockCodeInfo);
-        const codeInfoFound = codeGeneratorService.getCodeInfo(undefined, undefined, mockCodeInfo.phoneNumber)
-        expect(codeInfoFound).to.exist
-        expect(codeInfoFound).to.deep.equal(mockCodeInfo)
+		const result = codeGeneratorService.saveCodeInfo(mockCodeInfo);
+		const codeInfoFound = codeGeneratorService.getCodeInfo(undefined, mockCodeInfo.phoneNumber);
+		expect(codeInfoFound).to.exist;
+		expect(codeInfoFound).to.deep.equal(mockCodeInfo);
 	});
 });
