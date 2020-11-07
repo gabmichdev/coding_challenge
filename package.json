@@ -4,9 +4,9 @@
 	"description": "",
 	"main": "app.js",
 	"scripts": {
-		"start": "cross-env NODE_ENV=production&&npm run build&&node dist/index.js",
-		"start:dev": "cross-env NODE_ENV=development&&tsc-watch --onSuccess \"node dist/index.js\"",
-		"test": "cross-env NODE_ENV=development&&npm run build&&mocha dist/**/*.test.js",
+		"start": "set NODE_ENV=production&&npm run build&&node dist/index.js",
+		"start:dev": "set NODE_ENV=development&&tsc-watch --onSuccess \"node dist/index.js\"",
+		"test": "set NODE_ENV=development&&npm run build&&mocha dist/**/*.test.js",
 		"build": "tsc",
 		"start:linuxProductive": "export NODE_ENV=production&&npm run build&&node dist/index.js"
 	},
