@@ -26,9 +26,9 @@
 					"raw": "{\r\n    \"email\": \"ENTER AN EMAIL HERE\",\r\n    \"phoneNumber\": \"ENTER A PHONE NUMBER HERE\"\r\n}"
 				},
 				"url": {
-					"raw": "{{dev_host}}/user-stories/verification/send",
+					"raw": "http://localhost:8080/user-stories/verification/send",
 					"host": [
-						"{{dev_host}}"
+						"http://localhost:8080"
 					],
 					"path": [
 						"user-stories",
@@ -60,9 +60,9 @@
 					"raw": "{\r\n    \"email\": \"ENTER AN EMAIL HERE\",\r\n    \"phoneNumber\": \"ENTER A PHONE NUMBER HERE\"\r\n}"
 				},
 				"url": {
-					"raw": "{{dev_host}}/user-stories/verification/ENTER THE VERIFICATION CODE HERE/validate",
+					"raw": "http://localhost:8080/user-stories/verification/ENTER THE VERIFICATION CODE HERE/validate",
 					"host": [
-						"{{dev_host}}"
+						"http://localhost:8080"
 					],
 					"path": [
 						"user-stories",
@@ -95,9 +95,9 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "{{dev_host}}/user-stories/verification/resend/ENTER YOUR PHONE NUMBER HERE",
+					"raw": "http://localhost:8080/user-stories/verification/resend/ENTER YOUR PHONE NUMBER HERE",
 					"host": [
-						"{{dev_host}}"
+						"http://localhost:8080"
 					],
 					"path": [
 						"user-stories",

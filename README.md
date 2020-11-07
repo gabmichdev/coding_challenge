@@ -10,7 +10,11 @@ npm install
 ```
 in the console of your preference.
 
-Starting the server depends on your OS. If you are using Windows, run `npm start`, this will spin up the server in production mode, otherwise, if you are using a Linux system, run `npm run start:linuxProductive`.
+Starting the server depends on your OS. If you are using Windows, run `npm start`, this will spin up the server in production mode, otherwise, if you are using a Linux system, run `npm run start:linuxProductive`, note that the port is defined inside the files in the `config` folder. The production file will override any matching fields in the default file. 
+If you would like to make any changes to the code and have it live reload, feel free to run `npm run start:dev`.
+##### Note: 
+Credentials for production mode are not set and could be set by copying the contents of `default.json` into `production.json` (or by running the server in development mode). However, the phone number to send SMS to must be previously verified and this could mean that the SMS functionality may not be available. Due to this situation, provided within the repository will be a folder called `validation_images` containing proof images of how the messages would look if they were sent through SMS.
+
 
 ### What's inside?
 This server exposes three endpoints:
@@ -38,7 +42,7 @@ Main improvement to do is the possibility for the user to verify its account by 
 Other improvements are clearly the implementation of a better persistance layer, namely a cache-based database such as redis, since the application does not rely on keeping up with huge, complex and long-time persistant data.
 
 ### How to test this?
-Provided in this repository there is a JSON file called `postman-collection.json`. It contains the three previously explained endpoints with the field names already set. In any case, the system will inform the user if it finds any issue with the entered data. The user should upload this file into Postman or any other REST client of their choice. Afterwards, the corresponding fields should be filled with valid data.
+Provided in this repository there is a JSON file called `postman-collection.json`. It contains the three previously explained endpoints with the field names already set. In any case, the system will inform the user if it finds any issue with the entered data. The user should upload this file into Postman or any other REST client of their choice. Afterwards, the corresponding fields should be filled with valid data. Keep in mind that the JSON file will have the development port by default.
 
 If you are short in time and would like to check that everything is working as expected, it is as easy as running:
 ```cmd
