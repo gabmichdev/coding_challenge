@@ -2,23 +2,24 @@ import Container, { Service } from 'typedi';
 import config from 'config';
 import twilio from 'twilio';
 import { CodeGeneratorService } from './code-generator.service';
-import { getCountryCode, getPhoneNumber, parseMessage } from '../utils/utilities';
+import { parseMessage } from '../utils/message-parser';
 import { GenericError } from '../interfaces/responses';
 import { BadRequestError } from 'routing-controllers';
+import { PhoneNumberParserService } from './phone-number-parser.service';
 
-interface TwilioConfig {
+export interface TwilioConfig {
 	accountSid: string;
 	token: string;
-	phoneNumber: string;
+	phoneNumber?: string;
 }
-enum messages {
+export enum messages {
 	SEND_VERIFICATION_CODE = 'Hi {email}! Your verification code for Rever is {code}. We are sending you this notification through our {messageMechanism} subsystem.',
 	CHECK_CODE = 'Hi {email}, you have been verified!',
 	NO_MATCH = 'Hi {email}! The verification code does not match the one we sent you. Please try again.',
 	RESEND_CODE = 'Here is your Rever verification code! {code}.',
 	RESEND_CODE_ERROR = 'Verification code not found!'
 }
-enum messageMechanism {
+export enum messageMechanism {
 	SMS = 'SMS',
 	CONSOLE = 'Console'
 }
@@ -27,28 +28,26 @@ const twilioConfig: TwilioConfig = config.get('twilio');
 
 @Service()
 export class TwilioService {
-	private defaultCountryCode = '+52';
-	constructor(private phoneNumber = twilioConfig.phoneNumber, private codeGeneratorService: CodeGeneratorService) {
+	credentials: TwilioConfig;
+	constructor(
+		public phoneNumber = twilioConfig.phoneNumber,
+		public codeGeneratorService: CodeGeneratorService,
+		public phoneNumberParserService: PhoneNumberParserService
+	) {
 		this.phoneNumber;
 		this.codeGeneratorService = Container.get(CodeGeneratorService);
 	}
 
-	async sendNewVerificationMessage(to: string, email: string) {
-		const preparedphoneNumber = this.preparephoneNumber(to);
+	async sendNewVerificationMessage(to: string, email: string): Promise<void> {
+		const preparedphoneNumber = this.phoneNumberParserService.parsePhoneNumber(to);
 		const code = this.codeGeneratorService.generateCode(email, preparedphoneNumber);
 		try {
-			await this.sendMessage(
-				preparedphoneNumber,
-				messages.SEND_VERIFICATION_CODE,
-				{
-					email,
-					code,
-					messageMechanism: messageMechanism.SMS
-				},
-				messageMechanism.SMS
-			);
+			await this.sendMessage(preparedphoneNumber, messages.SEND_VERIFICATION_CODE, {
+				email,
+				code,
+				messageMechanism: messageMechanism.SMS
+			});
 		} catch (err) {
-			console.log(err.message);
 			this.sendMessage(
 				preparedphoneNumber,
 				messages.SEND_VERIFICATION_CODE,
@@ -64,18 +63,17 @@ export class TwilioService {
 
 	async validateVerificationCode(code: string, email: string, phoneNumber: string) {
 		try {
-			const preparedphoneNumber = this.preparephoneNumber(phoneNumber);
-			let codeInfo = this.codeGeneratorService.getCodeInfo(code, email, preparedphoneNumber);
+			const preparedphoneNumber = this.phoneNumberParserService.parsePhoneNumber(phoneNumber);
+			let codeInfo = this.codeGeneratorService.getCodeInfo(code, preparedphoneNumber);
 			if (codeInfo) {
 				codeInfo.verified = true;
-				await this.sendMessage(preparedphoneNumber, messages.CHECK_CODE, { email }, messageMechanism.SMS);
+				await this.sendMessage(preparedphoneNumber, messages.CHECK_CODE, { email });
 			} else {
-				await this.sendMessage(preparedphoneNumber, messages.NO_MATCH, { email }, messageMechanism.SMS);
+				await this.sendMessage(preparedphoneNumber, messages.NO_MATCH, { email });
 			}
 		} catch (err) {
-			console.log(err.message);
-			const preparedphoneNumber = this.preparephoneNumber(phoneNumber);
-			const codeInfo = this.codeGeneratorService.getCodeInfo(code, email, preparedphoneNumber);
+			const preparedphoneNumber = this.phoneNumberParserService.parsePhoneNumber(phoneNumber);
+			const codeInfo = this.codeGeneratorService.getCodeInfo(code, preparedphoneNumber);
 			if (codeInfo) {
 				codeInfo.verified = true;
 				this.sendMessage(preparedphoneNumber, messages.CHECK_CODE, { email }, messageMechanism.CONSOLE);
@@ -87,23 +85,17 @@ export class TwilioService {
 
 	async resendVerificationCode(phoneNumber: string) {
 		try {
-			const preparedphoneNumber = this.preparephoneNumber(phoneNumber);
-			let codeInfo = this.codeGeneratorService.getCodeInfo(undefined, undefined, preparedphoneNumber);
+			const preparedphoneNumber = this.phoneNumberParserService.parsePhoneNumber(phoneNumber);
+			let codeInfo = this.codeGeneratorService.getCodeInfo(undefined, preparedphoneNumber);
 			if (codeInfo) {
 				codeInfo.verified = true;
-				await this.sendMessage(
-					preparedphoneNumber,
-					messages.RESEND_CODE,
-					{ code: codeInfo.code },
-					messageMechanism.SMS
-				);
+				await this.sendMessage(preparedphoneNumber, messages.RESEND_CODE, { code: codeInfo.code });
 			} else {
 				await this.sendMessage(preparedphoneNumber, messages.RESEND_CODE_ERROR, {}, messageMechanism.SMS);
 			}
 		} catch (err) {
-			console.log(err.message);
-			const preparedphoneNumber = this.preparephoneNumber(phoneNumber);
-			const codeInfo = this.codeGeneratorService.getCodeInfo(undefined, undefined, preparedphoneNumber);
+			const preparedphoneNumber = this.phoneNumberParserService.parsePhoneNumber(phoneNumber);
+			const codeInfo = this.codeGeneratorService.getCodeInfo(undefined, preparedphoneNumber);
 			if (codeInfo) {
 				codeInfo.verified = true;
 				this.sendMessage(
@@ -118,27 +110,24 @@ export class TwilioService {
 		}
 	}
 
-	private preparephoneNumber(phoneNumber: string) {
-		const cleanphoneNumber = getPhoneNumber(phoneNumber);
-		if (cleanphoneNumber) {
-			console.log(cleanphoneNumber);
-			const countryCode = getCountryCode(cleanphoneNumber);
-			console.table({ countryCode, cleanphoneNumber });
-			if (countryCode && countryCode.length > 0) {
-				return cleanphoneNumber.startsWith('+') ? cleanphoneNumber : '+' + cleanphoneNumber;
-			} else {
-				return this.defaultCountryCode + cleanphoneNumber;
-			}
-		} else {
-			throw new BadRequestError('Invalid mobile phone entered');
+	async getClient() {
+		try {
+			return twilio(this.credentials.accountSid, this.credentials.token);
+		} catch (err) {
+			console.error(err);
+			return null;
 		}
 	}
 
-	private async sendMessage(to: string, message: string, fields: any, through: string = messageMechanism.SMS) {
+	setCredentials(credentials: TwilioConfig) {
+		this.credentials = credentials;
+	}
+
+	async sendMessage(to: string, message: string, fields: any, through: string = messageMechanism.SMS) {
 		try {
 			const parsedMessage = parseMessage(message, fields) as string;
-			if (through === messageMechanism.SMS) {
-				const client = twilio(twilioConfig.accountSid, twilioConfig.token);
+			const client = await this.getClient();
+			if (through === messageMechanism.SMS && client) {
 				await client.messages.create({
 					to,
 					body: parsedMessage,
@@ -147,9 +136,7 @@ export class TwilioService {
 			} else {
 				console.log(parsedMessage);
 			}
-			
 		} catch (err) {
-			console.log(err);
 			throw new GenericError(500, 'An error has ocurred when trying to send SMS!');
 		}
 	}
