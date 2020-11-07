@@ -1,6 +1,6 @@
 import { IsEmail, IsNotEmpty, IsPhoneNumber, IsString } from 'class-validator';
 import { NotValidEmail } from '../validators/exclude-yahoo.validator';
-import { ValidPhoneNumber } from '../validators/mobile-phone.validator';
+import { ValidPhoneNumber } from '../validators/phone-number.validator';
 import { VerifyAccountDto } from './verify-account.dto';
 
 export class ResendCodeDto {
